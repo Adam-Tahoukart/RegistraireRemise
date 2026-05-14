@@ -1,0 +1,22 @@
+@{
+    ViewBag.Title = "Journal d'activites";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span>Journal d'activites</span>
+    </div>
+    <div class="headerActions">
+        <a href="@Url.Action("Index","Students")" title="Retour">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    <details open id="details_events">
+        <summary>Activites</summary>
+        <div style="padding-left:12px;color:gray;">Aucune activite journalisee.</div>
+    </details>
+</div>

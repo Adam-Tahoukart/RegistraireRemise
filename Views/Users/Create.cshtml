@@ -1,0 +1,53 @@
+@* Vue pour ajouter un usager *@
+@model PFI.Models.User
+@{
+    ViewBag.Title = "Usager - Ajout";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Usager - Ajout</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="createForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Index","Users")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    @using (Html.BeginForm("Create", "Users", FormMethod.Post, new { id = "createForm" }))
+    {
+        <details id="details_info" open>
+            <summary>Informations</summary>
+            <div>
+                <div class="form-group">
+                    <label>Courriel</label>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                </div>
+                <div class="form-group">
+                    <label>Mot de passe</label>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Acces</label>
+                    @Html.DropDownListFor(m => m.Access, new SelectList(new[]
+                         {
+                        new { Value = "0", Text = "Lecture seule" },
+                        new { Value = "1", Text = "Lecture/Ecriture" },
+                        new { Value = "2", Text = "Administration" }
+                    }, "Value", "Text"), new { @class = "form-control" })
+                </div>
+            </div>
+        </details>
+    }
+</div>

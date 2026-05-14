@@ -1,0 +1,77 @@
+@* Vue pour ajouter un prof *@
+@model PFI.Models.Teacher
+@{
+    ViewBag.Title = "Prof - Ajout";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Prof - Ajout</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="createForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Index","Teachers")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger">
+            <ul style="margin:0;">
+                @foreach (var error in ViewBag.Errors as List<string>)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+    @using (Html.BeginForm("Create", "Teachers", FormMethod.Post, new { id = "createForm" }))
+    {
+        <details id="details_info" open>
+            <summary>Informations</summary>
+            <div>
+                <div class="form-group">
+                    <label>Prenom</label>
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Date d'embauche</label>
+                    @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                </div>
+                <div class="form-group">
+                    <label>Telephone</label>
+                    @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Courriel</label>
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Avatar</label>
+                    @Html.TextBoxFor(m => m.Avatar, new { @class = "form-control", placeholder = "URL de l'avatar" })
+                </div>
+            </div>
+        </details>
+
+        <details id="details_courses" open>
+            <summary>Cours : Session @PFI.Models.NextSession.ShortCaption</summary>
+            <div>
+                @Helper.SelectionLists("selectedCoursesId", null, (System.Web.Mvc.SelectList)ViewBag.Courses)
+            </div>
+        </details>
+    }
+</div>
+
+@section scripts {
+    <script src="~/scripts/selections.js"></script>
+}

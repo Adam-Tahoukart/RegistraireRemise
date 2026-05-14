@@ -1,0 +1,47 @@
+@* Vue pour changer la session *@
+@{
+    ViewBag.Title = "Session courante";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Session courante</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="sessionForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#245eca;"></i>
+        </button>
+        <a href="javascript:history.back()" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#245eca;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    <p>Choisissez l'annee et la session pour les prochaines allocations de cours :</p>
+
+    @using (Html.BeginForm("Edit", "Session", FormMethod.Post, new { id = "sessionForm" }))
+    {
+        <div style="margin-bottom:12px;">
+            <label style="color:#777;font-weight:bold;">Annee</label>
+            <input type="number" name="year" class="form-control"
+                   value="@PFI.Models.NextSession.Year" min="2020" max="2099"
+                   style="max-width:120px;" />
+        </div>
+
+        <fieldset>
+            <legend>Session</legend>
+            <div class="form-check">
+                <input type="radio" name="season" id="automne" value="Automne" class="form-check-input"
+                       @(PFI.Models.NextSession.ValidSessions.Contains(1) ? "checked" : "") />
+                <label for="automne" class="form-check-label">Automne</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="season" id="hiver" value="Hiver" class="form-check-input"
+                       @(!PFI.Models.NextSession.ValidSessions.Contains(1) ? "checked" : "") />
+                <label for="hiver" class="form-check-label">Hiver</label>
+            </div>
+        </fieldset>
+    }
+</div>

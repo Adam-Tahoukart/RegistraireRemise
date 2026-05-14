@@ -1,0 +1,48 @@
+/* Style pour les profs */
+.TeacherListLayout {
+    display: flex;
+    flex-direction: row;
+    height: 44px;
+    align-items: center;
+    font-size: larger;
+    cursor: pointer;
+    padding-left: 6px;
+    border-radius: 6px;
+    gap: 10px;
+}
+
+    .TeacherListLayout:hover {
+        background-color: azure;
+    }
+
+    .TeacherListLayout a {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: black;
+        width: 100%;
+    }
+
+.teacherCode {
+    color: blue;
+    font-family: Consolas;
+    font-size: 16px;
+    min-width: 130px;
+}
+
+.TeacherLink {
+    text-decoration: none;
+    color: black;
+}
+
+.teacherDetailsAvatar {
+    width: min(55%, 260px);
+    min-width: 180px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+    margin: 14px auto 6px;
+    border-radius: 0;
+}

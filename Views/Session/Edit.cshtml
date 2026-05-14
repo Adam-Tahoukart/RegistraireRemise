@@ -1,0 +1,43 @@
+@* Vue pour changer la session *@
+@{
+    var currentSeason = PFI.Models.NextSession.ShortCaption.Contains("Hiver") ? "Hiver" : "Automne";
+    var currentYear = PFI.Models.NextSession.Year;
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Session - Modification</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="sessionForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Index", "Students")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @using (Html.BeginForm("Edit", "Session", FormMethod.Post, new { id = "sessionForm" }))
+    {
+        <div class="form-group">
+            <label>Annee</label>
+            <input type="number" name="year" class="form-control" value="@currentYear" />
+        </div>
+        <div class="form-group">
+            <label>Session</label>
+            <div style="display:flex;gap:16px;">
+                <div>
+                    <input type="radio" name="season" value="Hiver" id="hiver" @(currentSeason == "Hiver" ? "checked" : "") />
+                    <label for="hiver">Hiver</label>
+                </div>
+                <div>
+                    <input type="radio" name="season" value="Automne" id="automne" @(currentSeason == "Automne" ? "checked" : "") />
+                    <label for="automne">Automne</label>
+                </div>
+            </div>
+        </div>
+    }
+</div>

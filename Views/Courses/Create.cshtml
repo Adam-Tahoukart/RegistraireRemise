@@ -1,0 +1,54 @@
+@* Vue pour ajouter un cours *@
+@model PFI.Models.Course
+@{
+    ViewBag.Title = "Cours - Ajout";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Cours - Ajout</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="createForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Index","Courses")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger">
+            <ul style="margin:0;">
+                @foreach (var error in ViewBag.Errors as List<string>)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+    @using (Html.BeginForm("Create", "Courses", FormMethod.Post, new { id = "createForm" }))
+    {
+        <details id="details_info" open>
+            <summary>Informations</summary>
+            <div>
+                <div class="form-group">
+                    <label>Session</label>
+                    @Html.TextBoxFor(m => m.Session, new { @class = "form-control", type = "number", min = "1", max = "6" })
+                </div>
+                <div class="form-group">
+                    <label>Sigle</label>
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Titre</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+            </div>
+        </details>
+    }
+</div>

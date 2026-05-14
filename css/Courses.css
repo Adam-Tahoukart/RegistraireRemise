@@ -1,0 +1,41 @@
+/* Style pour les cours */
+.CoursesListLayout {
+    min-height: 28px;
+    display: flex;
+    align-items: baseline;
+    font-size: larger;
+    cursor: pointer;
+    padding-left: 6px;
+    border-radius: 6px;
+    font-family: 'Times New Roman';
+}
+
+    .CoursesListLayout a {
+        text-decoration: none;
+        color: black;
+        display: flex;
+        gap: 6px;
+        align-items: baseline;
+        flex-wrap: wrap;
+    }
+
+    .CoursesListLayout:hover {
+        background-color: azure;
+    }
+
+    .CoursesListLayout .icon {
+        display: none !important;
+    }
+
+    .CoursesListLayout:hover .icon {
+        display: block !important;
+    }
+
+.courseCode {
+    font-family: Consolas;
+    color: blue;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+

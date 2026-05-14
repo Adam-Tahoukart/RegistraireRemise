@@ -1,0 +1,73 @@
+@* Vue pour voir la liste des usagers *@
+@model IEnumerable<PFI.Models.User>
+@{
+    ViewBag.Title = "Usagers";
+    bool canWrite = Session["access"] != null && (PFI.Models.Access)Session["access"] == PFI.Models.Access.Admin;
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <a href="@Url.Action("Index","Students")">Etudiants</a>
+        <a href="@Url.Action("Index","Courses")">Cours</a>
+        <a href="@Url.Action("Index","Teachers")">Profs</a>
+        <a href="@Url.Action("Index","Users")" class="active">Usagers</a>
+    </div>
+    <div class="headerActions">
+        @if (canWrite)
+        {
+            <a href="@Url.Action("Create","Users")" title="Ajouter">
+                <i class="fa fa-circle-plus fa-xl" style="color:#0057CC;"></i>
+            </a>
+        }
+    </div>
+</div>
+
+<div class="pageContent">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Courriel</th>
+                <th>Acces</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.OrderBy(u => u.Email))
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>
+                        @switch (user.Access)
+                        {
+                            case PFI.Models.Access.Admin:
+                                <span>Administration</span>
+                                break;
+                            case PFI.Models.Access.ReadWrite:
+                                <span>Lecture/Ecriture</span>
+                                break;
+                            default:
+                                <span>Lecture seule</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        @if (canWrite)
+                        {
+                            <a href="@Url.Action("Edit","Users", new { id = user.Id })">
+                                <i class="fa fa-pen-to-square" style="color:#0057CC;"></i>
+                            </a>
+                            using (Html.BeginForm("Delete", "Users", new { id = user.Id }, FormMethod.Post))
+                            {
+                                <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;margin-left:8px;"
+                                        onclick="return confirm('Effacer ?')">
+                                    <i class="fa fa-trash" style="color:#0057CC;"></i>
+                                </button>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

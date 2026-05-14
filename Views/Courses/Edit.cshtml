@@ -1,0 +1,85 @@
+@* Vue pour modifier un cours *@
+@model PFI.Models.Course
+@{
+    ViewBag.Title = "Cours - Modification";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Cours - Modification</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="editForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Details","Courses", new { id = Model.Id })" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger">
+            <ul style="margin:0;">
+                @foreach (var error in ViewBag.Errors as List<string>)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+    @using (Html.BeginForm("Edit", "Courses", FormMethod.Post, new { id = "editForm" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+
+        <details id="details_info" open>
+            <summary>Informations - [@Model.Code]</summary>
+            <div>
+                <div class="form-group">
+                    <label>Session</label>
+                    @Html.TextBoxFor(m => m.Session, new { @class = "form-control", type = "number", min = "1", max = "6" })
+                </div>
+                <div class="form-group">
+                    <label>Sigle</label>
+                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Titre</label>
+                    @Html.TextBoxFor(m => m.Title, new { @class = "form-control" })
+                </div>
+            </div>
+        </details>
+
+        <details id="details_registrations" open>
+            <summary>Inscriptions : Session @PFI.Models.NextSession.ShortCaption</summary>
+            <div>
+                @Helper.SelectionLists("selectedStudentsId", (System.Web.Mvc.SelectList)ViewBag.Registrations, (System.Web.Mvc.SelectList)ViewBag.Students)
+            </div>
+        </details>
+    }
+</div>
+
+@section scripts {
+    <script src="~/scripts/selections.js"></script>
+    <script>
+        RestoreDetailsState();
+        // Restaure l'etat ouvert ou ferme des details
+        function RestoreDetailsState() {
+            $("details").off('toggle');
+            $("details").on('toggle', function () {
+                let d = $(this)[0];
+                if (d) localStorage.setItem(d.id, d.open);
+            });
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.indexOf("details") > -1) {
+                    let d = $("#" + key)[0];
+                    if (d) d.open = localStorage.getItem(key) == "true";
+                }
+            }
+        }
+    </script>
+}

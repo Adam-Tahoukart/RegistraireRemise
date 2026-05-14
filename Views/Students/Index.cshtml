@@ -1,0 +1,151 @@
+@* Vue pour voir la liste des etudiants *@
+@model IEnumerable<PFI.Models.Student>
+@{
+    ViewBag.Title = "&Eacute;tudiants";
+    var yearsList = ViewBag.YearsList as List<int>;
+    bool canWrite = Session["access"] != null && (PFI.Models.Access)Session["access"] >= PFI.Models.Access.ReadWrite;
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <a href="@Url.Action("Index","Students")" class="active">&Eacute;tudiants</a>
+        <a href="@Url.Action("Index","Courses")">Cours</a>
+        <a href="@Url.Action("Index","Teachers")">Profs</a>
+    </div>
+    <div class="headerActions">
+        @if (canWrite)
+        {
+            <a href="@Url.Action("Create","Students")" title="Ajouter">
+                <i class="fa fa-circle-plus fa-xl" style="color:#0057CC;"></i>
+            </a>
+        }
+        <span id="toggleSearch" title="Rechercher" style="cursor:pointer;">
+            <i class="fa fa-magnifying-glass fa-xl" style="color:#0057CC;"></i>
+        </span>
+        <div id="menu" class="dropdown ms-auto">
+            <div data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="cmdIcon fa fa-bars" title="Menu"></i>
+            </div>
+            <div class="dropdown-menu noselect" id="DDMenu" style="width:300px !important">
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-address-card"></i>
+                    <a href="@Url.Action("EditProfil","Accounts")">Profil...</a>
+                </div>
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-sign-out"></i>
+                    <a href="@Url.Action("Logout","Accounts")">Deconnexion...</a>
+                </div>
+                @if (Session["access"] != null && (PFI.Models.Access)Session["access"] == PFI.Models.Access.Admin)
+                {
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-users"></i>
+                        <a href="@Url.Action("Index","Users")">Gestion des usagers...</a>
+                    </div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-calendar-days"></i>
+                        <a href="@Url.Action("LoginsJournal","Accounts")">Historique de connexions...</a>
+                    </div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-gear"></i>
+                        <a href="@Url.Action("EventsJournal","Accounts")">Journal d'activites...</a>
+                    </div>
+                }
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-info-circle"></i>
+                    <a href="@Url.Action("About","Accounts")">A propos...</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="searchBar" id="searchBar">
+    @using (Html.BeginForm("Index", "Students", FormMethod.Get))
+    {
+        <input type="text" name="search" value="@ViewBag.Search" placeholder="Rechercher..." autofocus />
+        <select name="year" class="form-select form-select-sm d-inline-block" style="width:auto;">
+            <option value="0">Toutes les annees</option>
+            @foreach (int y in yearsList)
+            {
+                <option value="@y" @(ViewBag.Year == y ? "selected" : "")>@y</option>
+            }
+        </select>
+    }
+</div>
+
+<div class="pageContent">
+    @foreach (int year in yearsList)
+    {
+        var students = Model.Where(s => s.Year == year).OrderBy(s => s.LastName).ToList();
+        if (students.Count > 0)
+        {
+            <details id="details_@year" open>
+                <summary>Cohorte @year</summary>
+                <div>
+                    @foreach (var student in students)
+                    {
+                        <div class="StudentListLayout">
+                            <a href="@Url.Action("Details","Students", new { id = student.Id })">
+                                <span class="studentCode">@student.Code.Substring(2)</span>
+                                @student.LastName @student.FirstName
+                            </a>
+                        </div>
+                    }
+                </div>
+            </details>
+        }
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            highlightSearch('@ViewBag.Search');
+            RestoreDetailsState();
+
+            @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+            {
+                <text>$('#searchBar').show();</text>
+            }
+
+            $('#toggleSearch').click(function () {
+                $('#searchBar').toggle();
+                if ($('#searchBar').is(':visible')) {
+                    $('#searchBar input[name="search"]').focus();
+                }
+            });
+
+            var searchTimeout;
+            $('#searchBar input[name="search"]').on('input', function () {
+                var search = $(this).val();
+                var year = $('#searchBar select[name="year"]').val();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    $.get('@Url.Action("Index", "Students")', { search: search, year: year }, function (data) {
+                        var doc = new DOMParser().parseFromString(data, 'text/html');
+                        $('.pageContent').html($(doc).find('.pageContent').html());
+                        highlightSearch(search);
+                        RestoreDetailsState();
+                        SummaryHandling();
+                        $('#searchBar').show();
+                    });
+                }, 300);
+            });
+
+            setInterval(function () {
+                if ($('#searchBar').is(':hidden')) {
+                    $.get('@Url.Action("Index", "Students")', { search: '@ViewBag.Search', year: @ViewBag.Year }, function (data) {
+                        var doc = new DOMParser().parseFromString(data, 'text/html');
+                        $('.pageContent').html($(doc).find('.pageContent').html());
+                        highlightSearch('@ViewBag.Search');
+                        RestoreDetailsState();
+                        SummaryHandling();
+                    });
+                }
+            }, 5000);
+        });
+    </script>
+}

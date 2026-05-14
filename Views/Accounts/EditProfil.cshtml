@@ -1,0 +1,40 @@
+@model PFI.Models.User
+@{
+    ViewBag.Title = "Profil";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span>Profil</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="profilForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Index","Students")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (!string.IsNullOrEmpty(ViewBag.Error as string))
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+    @using (Html.BeginForm("EditProfil", "Accounts", FormMethod.Post, new { id = "profilForm" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Access)
+        <fieldset>
+            <legend>Informations</legend>
+            <label>Courriel</label>
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+            <label>Mot de passe</label>
+            <input type="password" name="Password" class="form-control" value="@Model.Password" />
+            <label>Avatar</label>
+            @Html.TextBoxFor(m => m.Avatar, new { @class = "form-control", placeholder = "URL de l'avatar" })
+        </fieldset>
+    }
+</div>

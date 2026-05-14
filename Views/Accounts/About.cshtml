@@ -1,0 +1,25 @@
+@{
+    ViewBag.Title = "A propos";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span>A propos</span>
+    </div>
+    <div class="headerActions">
+        <a href="@Url.Action("Index","Students")" title="Retour">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    <details open id="details_about">
+        <summary>Programme 420</summary>
+        <div style="padding-left:12px;">
+            <p>Application de gestion des etudiants, cours et enseignants du programme 420.</p>
+            <p>College Lionel-Groulx</p>
+        </div>
+    </details>
+</div>

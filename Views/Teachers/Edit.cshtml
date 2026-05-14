@@ -1,0 +1,102 @@
+@* Vue pour modifier un prof *@
+@model PFI.Models.Teacher
+@{
+    ViewBag.Title = "Prof - Modification";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Prof - Modification</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="editForm" style="background:none;border:none;padding:0;cursor:pointer;" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#245eca;"></i>
+        </button>
+        <a href="@Url.Action("Details","Teachers", new { id = Model.Id })" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#245eca;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    @if (ViewBag.Errors != null)
+    {
+        <div class="alert alert-danger">
+            <ul style="margin:0;">
+                @foreach (var error in ViewBag.Errors as List<string>)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </div>
+    }
+    @using (Html.BeginForm("Edit", "Teachers", FormMethod.Post, new { id = "editForm" }))
+    {
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.Code)
+
+        <details id="details_info" open>
+            <summary>Informations - [@Model.Code]</summary>
+            <div>
+                <div class="form-group">
+                    <label>Prenom</label>
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Date d'embauche</label>
+                    @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                </div>
+                <div class="form-group">
+                    <label>Telephone</label>
+                    @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label>Avatar</label>
+                    @Html.HiddenFor(m => m.Avatar)
+                    @if (!string.IsNullOrEmpty(Model.Avatar))
+                    {
+                        <img src="@Model.Avatar" style="width:100%;max-width:300px;object-fit:cover;border-radius:6px;display:block;margin:6px auto;" />
+                    }
+                    else
+                    {
+                        <img src="~/App_Assets/teachers/no_avatar.png" style="width:100%;max-width:300px;object-fit:cover;border-radius:6px;display:block;margin:6px auto;" />
+                    }
+                </div>
+            </div>
+        </details>
+
+        <details id="details_courses" open>
+            <summary>Allocation : Session @PFI.Models.NextSession.ShortCaption</summary>
+            <div>
+                @Helper.SelectionLists("selectedCoursesId", (System.Web.Mvc.SelectList)ViewBag.Allocations, (System.Web.Mvc.SelectList)ViewBag.Courses)
+            </div>
+        </details>
+    }
+</div>
+
+@section scripts {
+    <script src="~/scripts/selections.js"></script>
+    <script>
+        RestoreDetailsState();
+        // Restaure l'etat ouvert ou ferme des details
+        function RestoreDetailsState() {
+            $("details").off('toggle');
+            $("details").on('toggle', function () {
+                let d = $(this)[0];
+                if (d) localStorage.setItem(d.id, d.open);
+            });
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.indexOf("details") > -1) {
+                    let d = $("#" + key)[0];
+                    if (d) d.open = localStorage.getItem(key) == "true";
+                }
+            }
+        }
+    </script>
+}

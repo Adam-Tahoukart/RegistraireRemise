@@ -1,0 +1,139 @@
+@* Vue pour voir la liste des cours *@
+@model IEnumerable<PFI.Models.Course>
+@{
+    ViewBag.Title = "Cours";
+    bool canWrite = Session["access"] != null && (PFI.Models.Access)Session["access"] >= PFI.Models.Access.ReadWrite;
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <a href="@Url.Action("Index","Students")">&Eacute;tudiants</a>
+        <a href="@Url.Action("Index","Courses")" class="active">Cours</a>
+        <a href="@Url.Action("Index","Teachers")">Profs</a>
+    </div>
+    <div class="headerActions">
+        @if (canWrite)
+        {
+            <a href="@Url.Action("Create","Courses")" title="Ajouter">
+                <i class="fa fa-circle-plus fa-xl" style="color:#0057CC;"></i>
+            </a>
+        }
+        <span id="toggleSearch" title="Rechercher" style="cursor:pointer;">
+            <i class="fa fa-magnifying-glass fa-xl" style="color:#0057CC;"></i>
+        </span>
+        <div id="menu" class="dropdown ms-auto">
+            <div data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="cmdIcon fa fa-bars" title="Menu"></i>
+            </div>
+            <div class="dropdown-menu noselect" id="DDMenu" style="width:300px !important">
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-address-card"></i>
+                    <a href="@Url.Action("EditProfil","Accounts")">Profil...</a>
+                </div>
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-sign-out"></i>
+                    <a href="@Url.Action("Logout","Accounts")">Deconnexion...</a>
+                </div>
+                @if (Session["access"] != null && (PFI.Models.Access)Session["access"] == PFI.Models.Access.Admin)
+                {
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-users"></i>
+                        <a href="@Url.Action("Index","Users")">Gestion des usagers...</a>
+                    </div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-calendar-days"></i>
+                        <a href="@Url.Action("LoginsJournal","Accounts")">Historique de connexions...</a>
+                    </div>
+                    <div class="dropdown-item item-layout">
+                        <i class="menuIcon fa fa-gear"></i>
+                        <a href="@Url.Action("EventsJournal","Accounts")">Journal d'activites...</a>
+                    </div>
+                }
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item item-layout">
+                    <i class="menuIcon fa fa-info-circle"></i>
+                    <a href="@Url.Action("About","Accounts")">A propos...</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="searchBar" id="searchBar">
+    @using (Html.BeginForm("Index", "Courses", FormMethod.Get))
+    {
+        <input type="text" name="search" value="@ViewBag.Search" placeholder="Rechercher..." autofocus />
+    }
+</div>
+
+<div class="pageContent">
+    @foreach (int session in Model.Select(c => c.Session).Distinct().OrderBy(s => s))
+    {
+        var courses = Model.Where(c => c.Session == session).OrderBy(c => c.Code).ToList();
+        <details id="details_session_@session" open>
+            <summary>Session @session</summary>
+            <div>
+                @foreach (var course in courses)
+                {
+                    <div class="CoursesListLayout">
+                        <a href="@Url.Action("Details","Courses", new { id = course.Id })">
+                            <span class="courseCode">@course.Code</span>
+                            @course.Title
+                        </a>
+                    </div>
+                }
+            </div>
+        </details>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            highlightSearch('@ViewBag.Search');
+            RestoreDetailsState();
+
+            @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+            {
+                <text>$('#searchBar').show();</text>
+            }
+
+            $('#toggleSearch').click(function () {
+                $('#searchBar').toggle();
+                if ($('#searchBar').is(':visible')) {
+                    $('#searchBar input[name="search"]').focus();
+                }
+            });
+
+            var searchTimeout;
+            $('#searchBar input[name="search"]').on('input', function () {
+                var search = $(this).val();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(function () {
+                    $.get('@Url.Action("Index", "Courses")', { search: search }, function (data) {
+                        var doc = new DOMParser().parseFromString(data, 'text/html');
+                        $('.pageContent').html($(doc).find('.pageContent').html());
+                        highlightSearch(search);
+                        RestoreDetailsState();
+                        SummaryHandling();
+                        $('#searchBar').show();
+                    });
+                }, 300);
+            });
+
+            setInterval(function () {
+                if ($('#searchBar').is(':hidden')) {
+                    $.get('@Url.Action("Index", "Courses")', { search: '@ViewBag.Search' }, function (data) {
+                        var doc = new DOMParser().parseFromString(data, 'text/html');
+                        $('.pageContent').html($(doc).find('.pageContent').html());
+                        highlightSearch('@ViewBag.Search');
+                        RestoreDetailsState();
+                        SummaryHandling();
+                    });
+                }
+            }, 5000);
+        });
+    </script>
+}

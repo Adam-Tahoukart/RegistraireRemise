@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Email": "admin@app.net",
+    "Password": "password",
+    "Access": 2
+  },
+  {
+    "Id": 2,
+    "Email": "super@app.net",
+    "Password": "password",
+    "Access": 1
+  },
+  {
+    "Id": 3,
+    "Email": "user@app.net",
+    "Password": "password",
+    "Access": 0
+  }
+] 

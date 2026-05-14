@@ -1,0 +1,95 @@
+@* Vue pour voir un cours *@
+@model PFI.Models.Course
+@{
+    ViewBag.Title = "Cours - Details";
+    var yearsList = Model.Registrations.Select(r => r.Year).Distinct().OrderByDescending(y => y).ToList();
+    bool canWrite = Session["access"] != null && (PFI.Models.Access)Session["access"] >= PFI.Models.Access.ReadWrite;
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span style="font-weight:bold;">Cours - Details</span>
+    </div>
+    <div class="headerActions">
+        @if (canWrite)
+        {
+            <a href="@Url.Action("Edit","Courses", new { id = Model.Id })" title="Modifier">
+                <i class="fa fa-pen-to-square fa-xl" style="color:#0057CC;"></i>
+            </a>
+            <span style="cursor:pointer;" title="Supprimer"
+                  onclick="bootbox.confirm({
+                    closeButton: false,
+                    message: '<span style=\'color:red;font-weight:bold;\'>Effacer ?</span>',
+                    buttons: {
+                        cancel: { label: 'Annuler', className: 'btn-secondary' },
+                        confirm: { label: 'D\'accord', className: 'btn-primary' }
+                    },
+                    callback: function(result) {
+                        if (result) {
+                            document.getElementById('deleteForm_@Model.Id').submit();
+                        }
+                    }
+                  })">
+            <i class="fa fa-trash-can fa-xl" style="color:#0057CC;"></i>
+            </span>
+            using (Html.BeginForm("Delete", "Courses", new { id = Model.Id }, FormMethod.Post, new { id = "deleteForm_" + Model.Id }))
+            {
+            }
+        }
+        <a href="@Url.Action("Index","Courses")" title="Retour">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent">
+    <p><span class="courseCode">@Model.Code</span></p>
+    <p>Session @Model.Session</p>
+    <p><strong>@Model.Title</strong></p>
+
+    <h5 style="margin-top:12px;">&Eacute;tudiants inscrits</h5>
+
+    @foreach (int year in yearsList)
+    {
+        var registrations = Model.Registrations.Where(r => r.Year == year).OrderBy(r => r.Student.LastName).ToList();
+        var allocation = Model.Allocations.FirstOrDefault(a => a.Year == year);
+        <details id="details_course_@year" open>
+            <summary>
+                Cohorte @year
+                @if (allocation != null)
+                {
+                    <span> - </span>
+                    <a href="@Url.Action("Details","Teachers", new { id = allocation.TeacherId })"
+                       style="color:#0057CC;">
+                        @allocation.Teacher.LastName @allocation.Teacher.FirstName
+                    </a>
+                }
+            </summary>
+            <div>
+                @foreach (var reg in registrations)
+                {
+                    <div class="StudentListLayout">
+                        <a href="@Url.Action("Details","Students", new { id = reg.StudentId })">
+                            <span class="studentCode">@reg.Student.Code.Substring(2)</span>
+                            @reg.Student.LastName @reg.Student.FirstName
+                        </a>
+                    </div>
+                }
+            </div>
+        </details>
+    }
+</div>
+
+@section scripts {
+    <script>
+        RestoreDetailsState();
+        setInterval(function () {
+            $.get('@Url.Action("Details", "Courses", new { id = Model.Id })', function (data) {
+                var doc = new DOMParser().parseFromString(data, 'text/html');
+                $('.pageContent').html($(doc).find('.pageContent').html());
+                RestoreDetailsState();
+            });
+        }, 5000);
+    </script>
+}

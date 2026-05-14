@@ -1,0 +1,17 @@
+@* Vue pour le haut de la page *@
+@{
+    string currentController = ViewContext.RouteData.Values["controller"].ToString();
+}
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <a href="@Url.Action("Index","Students")"
+           class="@(currentController == "Students" ? "active" : "")">&Eacute;tudiants</a>
+        <a href="@Url.Action("Index","Courses")"
+           class="@(currentController == "Courses" ? "active" : "")">Cours</a>
+        <a href="@Url.Action("Index","Teachers")"
+           class="@(currentController == "Teachers" ? "active" : "")">Profs</a>
+    </div>
+    <div class="headerActions" id="headerActions">
+    </div>
+</div>
