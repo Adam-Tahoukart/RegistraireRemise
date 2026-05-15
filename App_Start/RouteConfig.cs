@@ -1,4 +1,3 @@
-// Fichier qui choisit la page ouverte au debut
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,6 @@ namespace PFI
 {
     public class RouteConfig
     {
-        // Choisit les routes du site
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");

@@ -1,4 +1,3 @@
-// Fichier javascript general pour la recherche, les details ouvrables et les appels ajax
 $.ajaxSetup({
     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
     beforeSend: function (xhr) {
@@ -15,7 +14,6 @@ $(document).ready(function () {
     });
 });
 
-// Surligne la recherche
 function highlightSearch(search) {
     if (!search || search.trim() === '') return;
     search = search.trim().toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -24,7 +22,6 @@ function highlightSearch(search) {
     });
 }
 
-// Ajoute le ctrl clic
 function SummaryHandling() {
     $('summary').attr('title', 'Utilisez ctrl-clic pour developper/reduire');
     $('summary').off();
@@ -41,7 +38,6 @@ function SummaryHandling() {
     });
 }
 
-// Sauvegarde le fichier json
 function RestoreDetailsState() {
     $("details").off();
     $("details").on('toggle', function () {
@@ -64,7 +60,6 @@ $(".submitCmd").click(function () {
     $("form").submit();
 });
 
-// Appelle une action en ajax
 function ajaxActionCall(actionLink) {
     $.ajax({
         url: actionLink,
@@ -76,7 +71,6 @@ function ajaxActionCall(actionLink) {
 }
 
 let minKeywordLenth = 1;
-// Surligne le texte trouve
 function highlight(text, elem) {
     text = text.trim();
     if (text.length >= minKeywordLenth) {

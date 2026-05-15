@@ -1,9 +1,5 @@
-// Fichier javascript qui gere les deux listes de selection pour ajouter ou retirer des elements
-// auteur : Nicolas Chourot
-
 $(document).ready(initUI);
 
-// Prepare la page
 function initUI() {
 
     sortAllSelect();
@@ -31,7 +27,6 @@ function initUI() {
         e.preventDefault();
     });
 
-    // Important afin que tous les elements soient selectionnes lors de la soumission du formulaire
     $(document).on('submit', 'form', function () {
         $('.SelectedItems option').prop('selected', true);
     });
@@ -70,7 +65,6 @@ function initUI() {
     });
 }
 
-// Enleve les choix
 function deSelectAll(parent) {
     parent.find('.AddSelection').hide();
     parent.find('.RemoveSelection').hide();
@@ -79,14 +73,9 @@ function deSelectAll(parent) {
     parent.find('.UnselectedItems option').prop('selected', false);
 }
 
-// /////////////////////////////////////////////////////////////////
-// Sort text items of a listbox
-// /////////////////////////////////////////////////////////////////
-// Enleve les accents
 function normalize(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
-// Trie la liste
 function sortSelect(select) {
     select.each(function () {
         let select = $(this);
@@ -96,7 +85,6 @@ function sortSelect(select) {
     });
 }
 
-// Trie la liste
 function sortAllSelect() {
     $('select').each(function () {
         let select = $(this);
@@ -106,7 +94,6 @@ function sortAllSelect() {
     });
 }
 
-// Replace le scroll
 function scrollTo(selectObj, optionTop) {
     var selectTop = selectObj.offset().top;
     selectObj.scrollTop(selectObj.scrollTop() + (optionTop - selectTop));
