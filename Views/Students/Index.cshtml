@@ -77,27 +77,7 @@
 </div>
 
 <div class="pageContent">
-    @foreach (int year in yearsList)
-    {
-        var students = Model.Where(s => s.Year == year).OrderBy(s => s.LastName).ToList();
-        if (students.Count > 0)
-        {
-            <details id="details_@year" open>
-                <summary>Cohorte @year</summary>
-                <div>
-                    @foreach (var student in students)
-                    {
-                        <div class="StudentListLayout">
-                            <a href="@Url.Action("Details","Students", new { id = student.Id })">
-                                <span class="studentCode">@student.Code.Substring(2)</span>
-                                @student.LastName @student.FirstName
-                            </a>
-                        </div>
-                    }
-                </div>
-            </details>
-        }
-    }
+    @Html.Partial("_StudentsList", Model)
 </div>
 
 @section scripts {
@@ -119,31 +99,28 @@
             });
 
             var searchTimeout;
+            function refreshStudentsList(search, year) {
+                $.get('@Url.Action("GetStudentsList", "Students")', { search: search, year: year }, function (data) {
+                    $('.pageContent').html(data);
+                    highlightSearch(search);
+                    RestoreDetailsState();
+                    SummaryHandling();
+                });
+            }
+
             $('#searchBar input[name="search"]').on('input', function () {
                 var search = $(this).val();
                 var year = $('#searchBar select[name="year"]').val();
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(function () {
-                    $.get('@Url.Action("Index", "Students")', { search: search, year: year }, function (data) {
-                        var doc = new DOMParser().parseFromString(data, 'text/html');
-                        $('.pageContent').html($(doc).find('.pageContent').html());
-                        highlightSearch(search);
-                        RestoreDetailsState();
-                        SummaryHandling();
-                        $('#searchBar').show();
-                    });
+                    refreshStudentsList(search, year);
+                    $('#searchBar').show();
                 }, 300);
             });
 
             setInterval(function () {
                 if ($('#searchBar').is(':hidden')) {
-                    $.get('@Url.Action("Index", "Students")', { search: '@ViewBag.Search', year: @ViewBag.Year }, function (data) {
-                        var doc = new DOMParser().parseFromString(data, 'text/html');
-                        $('.pageContent').html($(doc).find('.pageContent').html());
-                        highlightSearch('@ViewBag.Search');
-                        RestoreDetailsState();
-                        SummaryHandling();
-                    });
+                    refreshStudentsList('@ViewBag.Search', @ViewBag.Year);
                 }
             }, 5000);
         });

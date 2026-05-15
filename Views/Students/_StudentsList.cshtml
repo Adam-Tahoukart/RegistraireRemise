@@ -1,0 +1,26 @@
+@model IEnumerable<PFI.Models.Student>
+@{
+    var yearsList = ViewBag.YearsList as List<int> ?? Model.Select(s => s.Year).Distinct().OrderByDescending(y => y).ToList();
+}
+
+@foreach (int year in yearsList)
+{
+    var students = Model.Where(s => s.Year == year).OrderBy(s => s.LastName).ToList();
+    if (students.Count > 0)
+    {
+        <details id="details_@year" open>
+            <summary>Cohorte @year</summary>
+            <div>
+                @foreach (var student in students)
+                {
+                    <div class="StudentListLayout">
+                        <a href="@Url.Action("Details","Students", new { id = student.Id })">
+                            <span class="studentCode">@student.Code.Substring(2)</span>
+                            @student.LastName @student.FirstName
+                        </a>
+                    </div>
+                }
+            </div>
+        </details>
+    }
+}

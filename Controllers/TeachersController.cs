@@ -15,13 +15,15 @@ namespace PFI.Controllers
             Session["lastController"] = "Teachers";
             Session["lastAction"] = "Index";
 
-            var teachers = DB.Teachers.ToList();
-
-            if (!string.IsNullOrEmpty(search))
-                teachers = teachers.FindAll(t => t.FullName.ToLower().Contains(search.ToLower()) || t.Code.ToLower().Contains(search.ToLower()));
-
             ViewBag.Search = search;
-            return View(teachers);
+            return View(FilterTeachers(search));
+        }
+
+        // Rafraichit la liste par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetTeachersList(string search = "")
+        {
+            return PartialView("_TeachersList", FilterTeachers(search));
         }
 
         // Affiche les details
@@ -31,6 +33,15 @@ namespace PFI.Controllers
             Teacher teacher = DB.Teachers.Get(id);
             if (teacher == null) return RedirectToAction("Index");
             return View(teacher);
+        }
+
+        // Rafraichit les details par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetTeacherDetails(int id)
+        {
+            Teacher teacher = DB.Teachers.Get(id);
+            if (teacher == null) return HttpNotFound();
+            return PartialView("_TeacherDetails", teacher);
         }
 
         // Affiche le formulaire
@@ -107,6 +118,16 @@ namespace PFI.Controllers
                 DB.Teachers.Delete(id);
             }
             return RedirectToAction("Index");
+        }
+
+        private List<Teacher> FilterTeachers(string search)
+        {
+            var teachers = DB.Teachers.ToList();
+
+            if (!string.IsNullOrEmpty(search))
+                teachers = teachers.FindAll(t => t.FullName.ToLower().Contains(search.ToLower()) || t.Code.ToLower().Contains(search.ToLower()));
+
+            return teachers;
         }
     }
 }

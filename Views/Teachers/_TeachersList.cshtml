@@ -1,0 +1,19 @@
+@model IEnumerable<PFI.Models.Teacher>
+
+@foreach (var teacher in Model.OrderBy(t => t.LastName))
+{
+    <div class="TeacherListLayout">
+        <a href="@Url.Action("Details","Teachers", new { id = teacher.Id })" class="TeacherLink">
+            @if (!string.IsNullOrEmpty(teacher.Avatar))
+            {
+                <img src="@teacher.Avatar" style="width:38px;height:38px;border-radius:50%;object-fit:cover;" />
+            }
+            else
+            {
+                <img src="~/App_Assets/teachers/no_avatar.png" style="width:38px;height:38px;border-radius:50%;" />
+            }
+            <span class="teacherCode">@teacher.Code</span>
+            <span>@teacher.LastName @teacher.FirstName</span>
+        </a>
+    </div>
+}

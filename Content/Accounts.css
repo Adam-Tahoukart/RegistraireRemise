@@ -1,0 +1,68 @@
+.accounts-page {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-form,
+.profil-form {
+    width: min(100%, 340px);
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+}
+
+.event-form fieldset,
+.profil-form fieldset {
+    background: #fff;
+}
+
+.event-form input,
+.profil-form input {
+    width: 100%;
+}
+
+.event-form .btn,
+.profil-form .btn {
+    width: 100%;
+    margin-top: 2px;
+}
+
+.account-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+}
+
+.account-links a {
+    color: #0057cc;
+    text-decoration: none;
+}
+
+.account-links a:hover {
+    text-decoration: underline;
+}
+
+.passwordLayout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 0;
+    align-items: center;
+}
+
+.passwordShowIcon {
+    transform: translate(-32px, 0);
+    cursor: pointer;
+    color: #888;
+    font-size: 1.1em;
+    z-index: 2;
+}
+
+.account-alert {
+    text-align: left;
+    margin-bottom: 0;
+}

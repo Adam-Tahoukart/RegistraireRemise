@@ -1,0 +1,102 @@
+@model PFI.Models.User
+@{
+    ViewBag.Title = "Nouveau compte";
+}
+
+<div class="appHeader">
+    <img src="~/App_Assets/lionelg.png" class="logo" />
+    <div class="navTabs">
+        <span>Nouveau compte</span>
+    </div>
+    <div class="headerActions">
+        <button type="submit" form="subscribeForm" title="Enregistrer">
+            <i class="fa fa-circle-check fa-xl" style="color:#0057CC;"></i>
+        </button>
+        <a href="@Url.Action("Login","Accounts")" title="Annuler">
+            <i class="fa fa-square-xmark fa-xl" style="color:#0057CC;"></i>
+        </a>
+    </div>
+</div>
+
+<div class="pageContent accounts-page">
+    @using (Html.BeginForm("Subscribe", "Accounts", FormMethod.Post, new { id = "subscribeForm", @class = "profil-form" }))
+    {
+        @Html.AntiForgeryToken()
+
+        if (ViewBag.Error != null)
+        {
+            <fieldset>
+                <legend><i class="fa-solid fa-triangle-exclamation" style="color:red; font-size:20px;"></i></legend>
+                <div class="account-alert">
+                    <span style="color:red">@ViewBag.Error</span>
+                </div>
+            </fieldset>
+        }
+
+        <fieldset>
+            <legend>Courriel</legend>
+            @Html.TextBoxFor(m => m.Email, new
+            {
+                @class = "form-control",
+                type = "email",
+                placeholder = "Courriel",
+                required = "required"
+            })
+        </fieldset>
+
+        <fieldset>
+            <legend>Mot de passe</legend>
+            <div class="passwordLayout">
+                @Html.PasswordFor(m => m.Password, new
+                {
+                    @class = "form-control",
+                    id = "Password",
+                    placeholder = "Mot de passe",
+                    required = "required"
+                })
+                <i id="toggleShowPassword" class="passwordShowIcon fa fa-eye" title="Afficher/Masquer le mot de passe"></i>
+            </div>
+
+            <div class="passwordLayout">
+                <input name="confirmPassword"
+                       id="ConfirmPassword"
+                       class="form-control"
+                       type="password"
+                       placeholder="Confirmation"
+                       required />
+            </div>
+        </fieldset>
+
+        <input type="submit"
+               value="Creer le compte..."
+               class="btn btn-primary" />
+
+        <div class="account-links">
+            @Html.ActionLink("Retour a la connexion...", "Login")
+        </div>
+    }
+</div>
+
+@section scripts {
+    <script>
+        $(() => {
+            let showPassword = false;
+            const password = $("#Password");
+            const confirmPassword = $("#ConfirmPassword");
+            const toggle = $("#toggleShowPassword");
+
+            function syncToggle() {
+                toggle.toggle(password.val() !== "");
+            }
+
+            syncToggle();
+            password.on("keyup input", syncToggle);
+            toggle.on("click", () => {
+                showPassword = !showPassword;
+                password.attr("type", showPassword ? "text" : "password");
+                confirmPassword.attr("type", showPassword ? "text" : "password");
+                toggle.toggleClass("fa-eye fa-eye-slash");
+            });
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-// Fichier qui groupe les scripts et les fichiers css
+// Fichier qui groupe les scripts et les fichiers CSS
 using System.Web;
 using System.Web.Optimization;
 
@@ -14,11 +14,12 @@ namespace PFI
                 "~/scripts/SiteScripts.js"));
 
             bundles.Add(new StyleBundle("~/bundles/css").Include(
-                "~/css/site.css",
-                "~/css/Students.css",
-                "~/css/Courses.css",
-                "~/css/Teachers.css",
-                "~/css/Selections.css"));
+                "~/Content/site.css",
+                "~/Content/Accounts.css",
+                "~/Content/Students.css",
+                "~/Content/Courses.css",
+                "~/Content/Teachers.css",
+                "~/Content/Selections.css"));
         }
     }
 }

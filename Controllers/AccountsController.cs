@@ -16,6 +16,7 @@ namespace PFI.Controllers
 
         // Verifie le courriel et le mot de passe
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
         {
             User user = DB.Users.ToList().Find(u => u.Email == email && u.Password == password);
@@ -29,6 +30,51 @@ namespace PFI.Controllers
             ViewBag.Message = "Courriel ou mot de passe invalide.";
             ViewBag.Success = false;
             return View();
+        }
+
+        // Affiche la page de creation de compte
+        public ActionResult Subscribe()
+        {
+            return View(new User());
+        }
+
+        // Cree un compte utilisateur en lecture seule
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Subscribe(User user, string confirmPassword)
+        {
+            if (user == null)
+            {
+                ViewBag.Error = "Veuillez remplir tous les champs.";
+                return View(new User());
+            }
+
+            user.Email = (user.Email ?? "").Trim();
+            user.Password = (user.Password ?? "").Trim();
+            confirmPassword = (confirmPassword ?? "").Trim();
+            user.Access = Access.ReadOnly;
+
+            if (!user.IsValid())
+            {
+                ViewBag.Error = "Veuillez remplir tous les champs.";
+                return View(user);
+            }
+
+            if (user.Password != confirmPassword)
+            {
+                ViewBag.Error = "Les mots de passe ne correspondent pas.";
+                return View(user);
+            }
+
+            bool emailExists = DB.Users.ToList().Exists(u => u.Email.ToLower() == user.Email.ToLower());
+            if (emailExists)
+            {
+                ViewBag.Error = "Ce courriel est deja utilise.";
+                return View(user);
+            }
+
+            DB.Users.Add(user);
+            return RedirectToAction("Login", new { message = "Creation de compte effectuee avec succes. Vous pouvez maintenant vous connecter.", success = true });
         }
 
         // Ferme la session

@@ -15,19 +15,19 @@ namespace PFI.Controllers
             Session["lastController"] = "Students";
             Session["lastAction"] = "Index";
 
-            var students = DB.Students.ToList();
-
-            if (!string.IsNullOrEmpty(search))
-                students = students.Where(s => s.FullName.ToLower().Contains(search.ToLower()) || s.Code.Contains(search)).ToList();
-
-            if (year > 0)
-                students = students.Where(s => s.Year == year).ToList();
-
             ViewBag.Search = search;
             ViewBag.Year = year;
             ViewBag.YearsList = DB.Students.ToList().Select(s => s.Year).Distinct().OrderByDescending(y => y).ToList();
 
-            return View(students);
+            return View(FilterStudents(search, year));
+        }
+
+        // Rafraichit la liste par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetStudentsList(string search = "", int year = 0)
+        {
+            ViewBag.YearsList = DB.Students.ToList().Select(s => s.Year).Distinct().OrderByDescending(y => y).ToList();
+            return PartialView("_StudentsList", FilterStudents(search, year));
         }
 
         // Affiche les details
@@ -37,6 +37,15 @@ namespace PFI.Controllers
             Student student = DB.Students.Get(id);
             if (student == null) return RedirectToAction("Index");
             return View(student);
+        }
+
+        // Rafraichit les details par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetStudentDetails(int id)
+        {
+            Student student = DB.Students.Get(id);
+            if (student == null) return HttpNotFound();
+            return PartialView("_StudentDetails", student);
         }
 
         // Affiche le formulaire
@@ -114,6 +123,19 @@ namespace PFI.Controllers
                 DB.Students.Delete(id);
             }
             return RedirectToAction("Index");
+        }
+
+        private List<Student> FilterStudents(string search, int year)
+        {
+            var students = DB.Students.ToList();
+
+            if (!string.IsNullOrEmpty(search))
+                students = students.Where(s => s.FullName.ToLower().Contains(search.ToLower()) || s.Code.Contains(search)).ToList();
+
+            if (year > 0)
+                students = students.Where(s => s.Year == year).ToList();
+
+            return students;
         }
     }
 }

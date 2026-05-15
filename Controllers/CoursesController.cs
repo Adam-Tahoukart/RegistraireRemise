@@ -15,13 +15,15 @@ namespace PFI.Controllers
             Session["lastController"] = "Courses";
             Session["lastAction"] = "Index";
 
-            var courses = DB.Courses.ToList();
-
-            if (!string.IsNullOrEmpty(search))
-                courses = courses.Where(c => c.Title.ToLower().Contains(search.ToLower()) || c.Code.ToLower().Contains(search.ToLower())).ToList();
-
             ViewBag.Search = search;
-            return View(courses);
+            return View(FilterCourses(search));
+        }
+
+        // Rafraichit la liste par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetCoursesList(string search = "")
+        {
+            return PartialView("_CoursesList", FilterCourses(search));
         }
 
         // Affiche les details
@@ -31,6 +33,15 @@ namespace PFI.Controllers
             Course course = DB.Courses.Get(id);
             if (course == null) return RedirectToAction("Index");
             return View(course);
+        }
+
+        // Rafraichit les details par AJAX
+        [UserAccess(Access.ReadOnly)]
+        public ActionResult GetCourseDetails(int id)
+        {
+            Course course = DB.Courses.Get(id);
+            if (course == null) return HttpNotFound();
+            return PartialView("_CourseDetails", course);
         }
 
         // Affiche le formulaire
@@ -95,6 +106,16 @@ namespace PFI.Controllers
                 DB.Courses.Delete(id);
             }
             return RedirectToAction("Index");
+        }
+
+        private List<Course> FilterCourses(string search)
+        {
+            var courses = DB.Courses.ToList();
+
+            if (!string.IsNullOrEmpty(search))
+                courses = courses.Where(c => c.Title.ToLower().Contains(search.ToLower()) || c.Code.ToLower().Contains(search.ToLower())).ToList();
+
+            return courses;
         }
     }
 }

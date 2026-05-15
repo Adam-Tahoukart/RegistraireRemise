@@ -318,4 +318,49 @@ summary {
     background-color: yellow;
 }
 
+.usersTable {
+    table-layout: fixed;
+}
+
+.usersTable td {
+    vertical-align: middle;
+}
+
+.usersTable td:first-child {
+    word-break: break-word;
+}
+
+.usersActionsHeader,
+.usersActionsCell {
+    width: 82px;
+    text-align: right;
+}
+
+.usersActions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 68px;
+}
+
+.userDeleteForm {
+    display: inline-flex;
+    margin: 0;
+}
+
+.userIconButton {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 

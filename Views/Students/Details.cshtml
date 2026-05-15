@@ -2,7 +2,6 @@
 @model PFI.Models.Student
 @{
     ViewBag.Title = "Etudiant - Details";
-    var yearsList = Model.Registrations.Select(r => r.Year).Distinct().OrderByDescending(y => y).ToList();
     bool canWrite = Session["access"] != null && (PFI.Models.Access)Session["access"] >= PFI.Models.Access.ReadWrite;
 }
 
@@ -44,48 +43,15 @@
 </div>
 
 <div class="pageContent">
-    <details id="details_student_@Model.Id" open>
-        <summary><i class="fa fa-graduation-cap"></i> @Model.LastName @Model.FirstName</summary>
-        <div>
-            <p><i class="fa fa-barcode"></i> @Model.Code</p>
-            <p><i class="fa fa-phone"></i> @Model.Phone</p>
-            <p><i class="fa fa-paper-plane"></i> @Model.Email</p>
-            <p><i class="fa fa-cake-candles"></i> @Model.BirthDate.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("fr-CA"))</p>
-        </div>
-    </details>
-
-    <div class="inscriptions-section" style="margin-top:12px;">
-        <h2 style="font-size:1.2rem;font-weight:bold;border-top:1px solid #ddd;padding-top:8px;margin-bottom:8px;">Inscriptions</h2>
-        @if (yearsList.Any())
-        {
-            foreach (int year in yearsList)
-            {
-                var registrations = Model.Registrations.Where(r => r.Year == year).OrderBy(r => r.Course.Session).ToList();
-                <details id="details_reg_@year" open>
-                    <summary>@year</summary>
-                    <div>
-                        @foreach (var reg in registrations)
-                        {
-                            <div class="CoursesListLayout">
-                                <a href="@Url.Action("Details","Courses", new { id = reg.CourseId })">
-                                    [@reg.Course.Session] <span class="courseCode">@reg.Course.Code</span> @reg.Course.Title
-                                </a>
-                            </div>
-                        }
-                    </div>
-                </details>
-            }
-        }
-    </div>
+    @Html.Partial("_StudentDetails", Model)
 </div>
 
 @section scripts {
     <script>
         RestoreDetailsState();
         setInterval(function () {
-            $.get('@Url.Action("Details", "Students", new { id = Model.Id })', function (data) {
-                var doc = new DOMParser().parseFromString(data, 'text/html');
-                $('.pageContent').html($(doc).find('.pageContent').html());
+            $.get('@Url.Action("GetStudentDetails", "Students", new { id = Model.Id })', function (data) {
+                $('.pageContent').html(data);
                 RestoreDetailsState();
             });
         }, 5000);

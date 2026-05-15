@@ -69,24 +69,7 @@
 </div>
 
 <div class="pageContent">
-    @foreach (int session in Model.Select(c => c.Session).Distinct().OrderBy(s => s))
-    {
-        var courses = Model.Where(c => c.Session == session).OrderBy(c => c.Code).ToList();
-        <details id="details_session_@session" open>
-            <summary>Session @session</summary>
-            <div>
-                @foreach (var course in courses)
-                {
-                    <div class="CoursesListLayout">
-                        <a href="@Url.Action("Details","Courses", new { id = course.Id })">
-                            <span class="courseCode">@course.Code</span>
-                            @course.Title
-                        </a>
-                    </div>
-                }
-            </div>
-        </details>
-    }
+    @Html.Partial("_CoursesList", Model)
 </div>
 
 @section scripts {
@@ -108,30 +91,27 @@
             });
 
             var searchTimeout;
+            function refreshCoursesList(search) {
+                $.get('@Url.Action("GetCoursesList", "Courses")', { search: search }, function (data) {
+                    $('.pageContent').html(data);
+                    highlightSearch(search);
+                    RestoreDetailsState();
+                    SummaryHandling();
+                });
+            }
+
             $('#searchBar input[name="search"]').on('input', function () {
                 var search = $(this).val();
                 clearTimeout(searchTimeout);
                 searchTimeout = setTimeout(function () {
-                    $.get('@Url.Action("Index", "Courses")', { search: search }, function (data) {
-                        var doc = new DOMParser().parseFromString(data, 'text/html');
-                        $('.pageContent').html($(doc).find('.pageContent').html());
-                        highlightSearch(search);
-                        RestoreDetailsState();
-                        SummaryHandling();
-                        $('#searchBar').show();
-                    });
+                    refreshCoursesList(search);
+                    $('#searchBar').show();
                 }, 300);
             });
 
             setInterval(function () {
                 if ($('#searchBar').is(':hidden')) {
-                    $.get('@Url.Action("Index", "Courses")', { search: '@ViewBag.Search' }, function (data) {
-                        var doc = new DOMParser().parseFromString(data, 'text/html');
-                        $('.pageContent').html($(doc).find('.pageContent').html());
-                        highlightSearch('@ViewBag.Search');
-                        RestoreDetailsState();
-                        SummaryHandling();
-                    });
+                    refreshCoursesList('@ViewBag.Search');
                 }
             }, 5000);
         });

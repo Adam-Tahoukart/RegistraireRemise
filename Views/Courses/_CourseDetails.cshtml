@@ -1,0 +1,40 @@
+@model PFI.Models.Course
+@{
+    var yearsList = Model.Registrations.Select(r => r.Year).Distinct().OrderByDescending(y => y).ToList();
+}
+
+<p><span class="courseCode">@Model.Code</span></p>
+<p>Session @Model.Session</p>
+<p><strong>@Model.Title</strong></p>
+
+<h5 style="margin-top:12px;">&Eacute;tudiants inscrits</h5>
+
+@foreach (int year in yearsList)
+{
+    var registrations = Model.Registrations.Where(r => r.Year == year).OrderBy(r => r.Student.LastName).ToList();
+    var allocation = Model.Allocations.FirstOrDefault(a => a.Year == year);
+    <details id="details_course_@year" open>
+        <summary>
+            Cohorte @year
+            @if (allocation != null)
+            {
+                <span> - </span>
+                <a href="@Url.Action("Details","Teachers", new { id = allocation.TeacherId })"
+                   style="color:#0057CC;">
+                    @allocation.Teacher.LastName @allocation.Teacher.FirstName
+                </a>
+            }
+        </summary>
+        <div>
+            @foreach (var reg in registrations)
+            {
+                <div class="StudentListLayout">
+                    <a href="@Url.Action("Details","Students", new { id = reg.StudentId })">
+                        <span class="studentCode">@reg.Student.Code.Substring(2)</span>
+                        @reg.Student.LastName @reg.Student.FirstName
+                    </a>
+                </div>
+            }
+        </div>
+    </details>
+}

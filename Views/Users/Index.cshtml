@@ -24,12 +24,12 @@
 </div>
 
 <div class="pageContent">
-    <table class="table table-hover">
+    <table class="table table-hover usersTable">
         <thead>
             <tr>
                 <th>Courriel</th>
                 <th>Acces</th>
-                <th></th>
+                <th class="usersActionsHeader"></th>
             </tr>
         </thead>
         <tbody>
@@ -51,19 +51,21 @@
                                 break;
                         }
                     </td>
-                    <td>
+                    <td class="usersActionsCell">
                         @if (canWrite)
                         {
-                            <a href="@Url.Action("Edit","Users", new { id = user.Id })">
+                            <div class="usersActions">
+                            <a class="userIconButton" href="@Url.Action("Edit","Users", new { id = user.Id })" title="Modifier">
                                 <i class="fa fa-pen-to-square" style="color:#0057CC;"></i>
                             </a>
-                            using (Html.BeginForm("Delete", "Users", new { id = user.Id }, FormMethod.Post))
+                            @using (Html.BeginForm("Delete", "Users", new { id = user.Id }, FormMethod.Post, new { @class = "userDeleteForm" }))
                             {
-                                <button type="submit" style="background:none;border:none;padding:0;cursor:pointer;margin-left:8px;"
+                                <button type="submit" class="userIconButton"
                                         onclick="return confirm('Effacer ?')">
                                     <i class="fa fa-trash" style="color:#0057CC;"></i>
                                 </button>
                             }
+                            </div>
                         }
                     </td>
                 </tr>
