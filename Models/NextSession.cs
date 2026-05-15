@@ -1,4 +1,3 @@
-// Fichier qui trouve la prochaine session
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -13,7 +12,6 @@ namespace PFI.Models
         private static readonly NextSession instance = new NextSession();
         public static NextSession Instance => instance;
 
-        // Garde la date choisie
         public static DateTime CurrentDate
         {
             get
@@ -29,7 +27,6 @@ namespace PFI.Models
             }
         }
 
-        // Donne les sessions valides
         public static List<int> ValidSessions
         {
             get
@@ -41,7 +38,6 @@ namespace PFI.Models
             }
         }
 
-        // Trouve l annee
         public static int Year
         {
             get
@@ -53,9 +49,7 @@ namespace PFI.Models
             }
         }
 
-        // Donne le nom court de la session
         public static string ShortCaption => (ValidSessions.Contains(1) ? "Automne " : "Hiver ") + Year;
-        // Donne le nom complet de la session
         public static string Caption => "Session " + ShortCaption;
     }
 }

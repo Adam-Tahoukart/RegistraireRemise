@@ -1,4 +1,3 @@
-// Classe qui cree des listes pour les formulaires
 using System.Collections.Generic;
 using System.Web.Mvc;
 
@@ -6,7 +5,6 @@ namespace PFI.Models
 {
     public class SelectListUtilities<T>
     {
-        // Cree une liste pour un formulaire
         public static SelectList Convert(IEnumerable<T> collection, string targetField = "Name", string defaultText = "")
         {
             List<SelectListItem> items = new List<SelectListItem>();

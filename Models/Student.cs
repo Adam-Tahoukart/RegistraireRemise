@@ -1,4 +1,3 @@
-// Modele pour les etudiants
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -16,23 +15,17 @@ namespace PFI.Models
         public string Email { get; set; }
         public string Phone { get; set; }
 
-        // Donne le nom complet
         [JsonIgnore]
         public string FullName => LastName + " " + FirstName;
-        // Donne le texte affiche dans les listes
         [JsonIgnore]
         public string Caption => Code + " " + LastName + " " + FirstName;
-        // Prend l annee dans le code
         [JsonIgnore]
         public int Year => int.Parse(Code.Substring(0, 4));
 
-        // Retourne toutes les inscriptions de cet etudiant
         [JsonIgnore]
         public List<Registration> Registrations => DB.Registrations.ToList().Where(r => r.StudentId == Id).ToList();
-        // Retourne les inscriptions de cet etudiant pour la prochaine session
         [JsonIgnore]
         public List<Registration> NextSessionRegistrations => DB.Registrations.ToList().Where(r => r.StudentId == Id && r.IsNextSession).ToList();
-        // Retourne la liste des cours auxquels l'etudiant est inscrit (toutes sessions)
         [JsonIgnore]
         public List<Course> Courses
         {
@@ -44,7 +37,6 @@ namespace PFI.Models
                 return courses;
             }
         }
-        // Retourne la liste des cours de la prochaine session pour cet etudiant
         [JsonIgnore]
         public List<Course> NextSessionCourses
         {
@@ -57,7 +49,6 @@ namespace PFI.Models
             }
         }
 
-        // Verifie les champs
         [JsonIgnore]
         public List<string> ValidationErrors
         {
@@ -75,30 +66,25 @@ namespace PFI.Models
             }
         }
 
-        // Verifie si c est la prochaine session
         public bool IsValid() => ValidationErrors.Count == 0;
 
-        // Cree une liste pour un formulaire
         public SelectList NextSessionCoursesToSelectList()
         {
             return SelectListUtilities<Course>.Convert(NextSessionCourses, "Caption");
         }
 
-        // Supprime un element
         public void DeleteAllRegistrations()
         {
             foreach (Registration r in Registrations)
                 DB.Registrations.Delete(r.Id);
         }
 
-        // Supprime un element
         public void DeleteNextSessionRegistrations()
         {
             foreach (Registration r in NextSessionRegistrations)
                 DB.Registrations.Delete(r.Id);
         }
 
-        // Met a jour les inscriptions de la prochaine session selon les cours selectionnes
         public void UpdateRegistrations(List<int> selectedCoursesId)
         {
             DeleteNextSessionRegistrations();

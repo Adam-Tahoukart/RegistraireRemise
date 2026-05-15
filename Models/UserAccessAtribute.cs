@@ -1,4 +1,3 @@
-// Filtre qui verifie les droits de l usager
 using System.Web.Mvc;
 
 namespace PFI.Models
@@ -7,13 +6,11 @@ namespace PFI.Models
     {
         private Access _requiredAccess;
 
-        // Garde le nom du fichier
         public UserAccessAttribute(Access access)
         {
             _requiredAccess = access;
         }
 
-        // Verifie la session avant de laisser mvc executer l'action
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var session = filterContext.HttpContext.Session;

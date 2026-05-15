@@ -1,4 +1,3 @@
-// Fichier qui donne acces aux donnees json
 namespace PFI.Models
 {
     public static class DB
