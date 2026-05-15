@@ -1,4 +1,3 @@
-// Controleur pour changer la session courante
 using PFI.Models;
 using System;
 using System.Web.Mvc;
@@ -7,7 +6,6 @@ namespace PFI.Controllers
 {
     public class SessionController : Controller
     {
-        // Affiche le formulaire
         [UserAccess(Access.ReadOnly)]
         public ActionResult Edit()
         {
@@ -16,7 +14,6 @@ namespace PFI.Controllers
             return View();
         }
 
-        // Modifie les infos
         [HttpPost]
         [UserAccess(Access.ReadOnly)]
         public ActionResult Edit(int year, string season)

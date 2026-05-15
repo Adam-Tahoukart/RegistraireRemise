@@ -1,4 +1,3 @@
-// Controleur pour gerer les etudiants
 using PFI.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,6 @@ namespace PFI.Controllers
 {
     public class StudentsController : Controller
     {
-        // Affiche la liste
         [UserAccess(Access.ReadOnly)]
         public ActionResult Index(string search = "", int year = 0)
         {
@@ -22,7 +20,6 @@ namespace PFI.Controllers
             return View(FilterStudents(search, year));
         }
 
-        // Rafraichit la liste par AJAX
         [UserAccess(Access.ReadOnly)]
         public ActionResult GetStudentsList(string search = "", int year = 0)
         {
@@ -30,7 +27,6 @@ namespace PFI.Controllers
             return PartialView("_StudentsList", FilterStudents(search, year));
         }
 
-        // Affiche les details
         [UserAccess(Access.ReadOnly)]
         public ActionResult Details(int id)
         {
@@ -39,7 +35,6 @@ namespace PFI.Controllers
             return View(student);
         }
 
-        // Rafraichit les details par AJAX
         [UserAccess(Access.ReadOnly)]
         public ActionResult GetStudentDetails(int id)
         {
@@ -48,7 +43,6 @@ namespace PFI.Controllers
             return PartialView("_StudentDetails", student);
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.ReadWrite)]
         public ActionResult Create()
         {
@@ -56,7 +50,6 @@ namespace PFI.Controllers
             return View();
         }
 
-        // Ajoute un nouvel element
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Create(Student student, List<int> selectedCoursesId)
@@ -79,7 +72,6 @@ namespace PFI.Controllers
             return View(student);
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.ReadWrite)]
         public ActionResult Edit(int id)
         {
@@ -90,7 +82,6 @@ namespace PFI.Controllers
             return View(student);
         }
 
-        // Modifie les infos
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Edit(Student student, List<int> selectedCoursesId)
@@ -111,7 +102,6 @@ namespace PFI.Controllers
             return View(student);
         }
 
-        // Supprime un element
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Delete(int id)

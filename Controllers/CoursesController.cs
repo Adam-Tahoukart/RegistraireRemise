@@ -1,4 +1,3 @@
-// Controleur pour gerer les cours
 using PFI.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,6 @@ namespace PFI.Controllers
 {
     public class CoursesController : Controller
     {
-        // Affiche la liste
         [UserAccess(Access.ReadOnly)]
         public ActionResult Index(string search = "")
         {
@@ -19,14 +17,12 @@ namespace PFI.Controllers
             return View(FilterCourses(search));
         }
 
-        // Rafraichit la liste par AJAX
         [UserAccess(Access.ReadOnly)]
         public ActionResult GetCoursesList(string search = "")
         {
             return PartialView("_CoursesList", FilterCourses(search));
         }
 
-        // Affiche les details
         [UserAccess(Access.ReadOnly)]
         public ActionResult Details(int id)
         {
@@ -35,7 +31,6 @@ namespace PFI.Controllers
             return View(course);
         }
 
-        // Rafraichit les details par AJAX
         [UserAccess(Access.ReadOnly)]
         public ActionResult GetCourseDetails(int id)
         {
@@ -44,14 +39,12 @@ namespace PFI.Controllers
             return PartialView("_CourseDetails", course);
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.ReadWrite)]
         public ActionResult Create()
         {
             return View();
         }
 
-        // Ajoute un nouveau cours apres validation des donnees
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Create(Course course)
@@ -65,7 +58,6 @@ namespace PFI.Controllers
             return View(course);
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.ReadWrite)]
         public ActionResult Edit(int id)
         {
@@ -76,7 +68,6 @@ namespace PFI.Controllers
             return View(course);
         }
 
-        // Modifie les infos
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Edit(Course course, List<int> selectedStudentsId)
@@ -93,7 +84,6 @@ namespace PFI.Controllers
             return View(course);
         }
 
-        // Supprime un element
         [HttpPost]
         [UserAccess(Access.ReadWrite)]
         public ActionResult Delete(int id)

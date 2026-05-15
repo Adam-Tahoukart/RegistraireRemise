@@ -1,4 +1,3 @@
-// Controleur pour la connexion et la deconnexion
 using PFI.Models;
 using System.Web.Mvc;
 
@@ -6,7 +5,6 @@ namespace PFI.Controllers
 {
     public class AccountsController : Controller
     {
-        // Affiche la page de connexion avec un message optionnel
         public ActionResult Login(string message = "", bool success = true)
         {
             ViewBag.Message = message;
@@ -14,7 +12,6 @@ namespace PFI.Controllers
             return View();
         }
 
-        // Verifie le courriel et le mot de passe
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(string email, string password)
@@ -32,13 +29,11 @@ namespace PFI.Controllers
             return View();
         }
 
-        // Affiche la page de creation de compte
         public ActionResult Subscribe()
         {
             return View(new User());
         }
 
-        // Cree un compte utilisateur en lecture seule
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Subscribe(User user, string confirmPassword)
@@ -77,7 +72,6 @@ namespace PFI.Controllers
             return RedirectToAction("Login", new { message = "Creation de compte effectuee avec succes. Vous pouvez maintenant vous connecter.", success = true });
         }
 
-        // Ferme la session
         public ActionResult Logout()
         {
             Session.Clear();

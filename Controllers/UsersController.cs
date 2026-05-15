@@ -1,4 +1,3 @@
-// Controleur pour gerer les usagers
 using PFI.Models;
 using System.Web.Mvc;
 
@@ -6,21 +5,18 @@ namespace PFI.Controllers
 {
     public class UsersController : Controller
     {
-        // Affiche la liste
         [UserAccess(Access.Admin)]
         public ActionResult Index()
         {
             return View(DB.Users.ToList());
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.Admin)]
         public ActionResult Create()
         {
             return View();
         }
 
-        // Ajoute un nouvel element
         [HttpPost]
         [UserAccess(Access.Admin)]
         public ActionResult Create(User user)
@@ -40,7 +36,6 @@ namespace PFI.Controllers
             return View(user);
         }
 
-        // Affiche le formulaire
         [UserAccess(Access.Admin)]
         public ActionResult Edit(int id)
         {
@@ -49,7 +44,6 @@ namespace PFI.Controllers
             return View(user);
         }
 
-        // Modifie les infos
         [HttpPost]
         [UserAccess(Access.Admin)]
         public ActionResult Edit(User user)
@@ -63,7 +57,6 @@ namespace PFI.Controllers
             return View(user);
         }
 
-        // Supprime un element
         [HttpPost]
         [UserAccess(Access.Admin)]
         public ActionResult Delete(int id)
